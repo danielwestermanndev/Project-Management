@@ -1,15 +1,52 @@
 <script setup>
-
 import Task from "@/components/Task.vue";
+import { ref, onMounted } from 'vue';
+import { taskService} from "@/services/taskAPI.js";
+
+const tasks = ref([])
+const loading = ref(false)
+const error = ref(null)
+
+const fetchTasks = async () => {
+  try {
+    loading.value = true
+    const { data } = await taskService.getTasks()
+    tasks.value = data
+  }catch( err ){
+    error.value = 'Error fetching tasks: ' + err.response?.data?.message ||err.message;
+  } finally {
+    loading.value = false
+  }
+}
+
+const updateTask = (updatedTask) => {
+  const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
+  if(index !== -1){
+    tasks.value[index] = updatedTask
+  }
+}
+
+onMounted(fetchTasks)
 </script>
 
 <template>
-  <ul>
-    <li><task></task></li>
-    <li><task></task></li>
-    <li><task></task></li>
-    <li><task></task></li>
-  </ul>
+
+  <div>
+    <div v-if="loading">Loading Tasks...</div>
+    <div v-else-if="error">{{ error }}</div>
+    <ul v-else>
+      <li v-for="task in tasks" :key="task.id">
+        <Task
+          :id="task.id"
+          :name="task.name"
+          @update-task="updateTask"
+        >
+
+        </Task>
+      </li>
+    </ul>
+  </div>
+
 </template>
 
 <style scoped>
