@@ -1,7 +1,10 @@
-
-import { createApp } from 'vue'
-import App from './App.vue'
+// main.js
+import {createApp} from 'vue'
+import {createBootstrap} from 'bootstrap-vue-next'
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.js'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+import App from './App.vue'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.use(createBootstrap)
+app.mount('#app')
