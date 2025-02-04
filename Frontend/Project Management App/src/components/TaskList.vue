@@ -1,7 +1,7 @@
 <script setup>
-import Task from "@/components/Task.vue";
 import { ref, onMounted } from 'vue';
 import { taskService} from "@/services/taskAPI.js";
+import TaskItem from "@/components/TaskItem.vue";
 
 const tasks = ref([])
 const loading = ref(false)
@@ -36,13 +36,13 @@ onMounted(fetchTasks)
     <div v-else-if="error">{{ error }}</div>
     <ul v-else>
       <li v-for="task in tasks" :key="task.id">
-        <Task
+        <TaskItem
           :id="task.id"
           :name="task.name"
           @update-task="updateTask"
         >
 
-        </Task>
+        </TaskItem>
       </li>
     </ul>
   </div>
