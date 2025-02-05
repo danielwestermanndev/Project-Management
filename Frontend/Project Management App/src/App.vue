@@ -1,9 +1,11 @@
 <script setup>
-import TaskList from "@/components/TaskList.vue";
+import MainView from "@/view/MainView.vue";
+
+
 </script>
 
 <template>
-  <task-list></task-list>
+  <MainView></MainView>
 </template>
 
 <style scoped>

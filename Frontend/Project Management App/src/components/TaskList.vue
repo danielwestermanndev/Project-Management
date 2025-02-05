@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { taskService} from "@/services/taskAPI.js";
 import TaskItem from "@/components/TaskItem.vue";
 
@@ -8,6 +8,7 @@ const loading = ref(false)
 const error = ref(null)
 
 const fetchTasks = async () => {
+  console.log("Fetching tasks...");
   try {
     loading.value = true
     const { data } = await taskService.getTasks()
@@ -17,6 +18,7 @@ const fetchTasks = async () => {
   } finally {
     loading.value = false
   }
+  console.log("Fetched tasks");
 }
 
 const updateTask = (updatedTask) => {
