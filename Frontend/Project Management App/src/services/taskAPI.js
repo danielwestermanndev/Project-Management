@@ -10,5 +10,8 @@ export const taskService = {
   },
   async createTask(task) {
     return api.post('/tasks', task)
+  },
+  async updateTask(id, task){
+    return api.put(`/tasks/${id}`, task)
   }
 }
