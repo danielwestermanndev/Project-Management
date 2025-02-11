@@ -13,5 +13,8 @@ export const taskService = {
   },
   async updateTask(id, task){
     return api.put(`/tasks/${id}`, task)
+  },
+  async deleteTask(id) {
+    return api.delete(`/tasks/${id}`)
   }
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -24,6 +25,16 @@ public class TaskService {
     public List<Task> findAll(){
         log.debug("Find All Tasks");
         return taskRepository.findAll();
+    }
+
+    public Optional<Task> findById(Long id){
+        log.debug("Searching for Task with ID: " + id);
+        return taskRepository.findById(id);
+    }
+
+    public void delete(Task task){
+        log.debug("Deleting Task with ID: " + task.getId());
+        taskRepository.delete(task);
     }
 
 }
