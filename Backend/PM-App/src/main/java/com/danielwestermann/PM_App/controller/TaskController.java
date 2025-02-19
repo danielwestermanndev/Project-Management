@@ -61,4 +61,15 @@ public class TaskController {
             return ResponseEntity.ok(updatedTask);
         }
     }
+
+    @PutMapping(value = "/{id}/{status}", consumes = "application/x-www-form-urlencoded")
+    public ResponseEntity<Task> updateTaskStatus(@PathVariable("id") Long taskId, @PathVariable("status") String newStatus) {
+        Task updatedTask = taskService.updateTaskStatus(taskId, newStatus);
+
+        if (updatedTask == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(updatedTask);
+        }
+    }
 }
