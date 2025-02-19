@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 import {BCard, BModal, BButton} from 'bootstrap-vue-next';
+import {taskService} from "@/services/taskAPI.js";
 
 const props = defineProps({
   id: {
@@ -11,18 +12,37 @@ const props = defineProps({
     type: String,
     required: true
   },
+  description: {
+    type: String,
+    required: true
+  },
   status: {
     type: String,
     required: true
   }
 });
 
+const cardVariant = computed(() => {
+  return props.status === "Completed" ? 'light' : 'secondary';
+})
+
+const finishTask = async () => {
+  try {
+    const response = await taskService.createTask(props.id, props.status);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    throw error;
+  }
+}
+
+
 const isModalVisible = ref(false);
 </script>
 
 <template>
   <div class="task">
-    <BCard >
+    <BCard :bg-variant="cardVariant">
       <h3>{{ name }}</h3>
       <p>{{ status }}</p>
       <BButton
@@ -34,6 +54,7 @@ const isModalVisible = ref(false);
       <BButton
       id="button-2"
       class="btn btn-success"
+      @click="finishTask"
       >
       Finish
       </BButton>
