@@ -22,7 +22,7 @@ const isModalVisible = ref(false);
 
 <template>
   <div class="task">
-    <BCard v-if="status==='TODO'">
+    <BCard >
       <h3>{{ name }}</h3>
       <p>{{ status }}</p>
       <BButton
