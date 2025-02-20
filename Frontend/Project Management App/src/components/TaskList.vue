@@ -26,6 +26,18 @@ const fetchTasks = async () => {
   console.log("Fetched tasks");
 };
 
+const updateTask = async (updatedTask) => {
+  const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
+  if(index !== -1){
+    tasks.value[index] = updatedTask
+    try{
+      await taskService.updateTask(updatedTask.id, updatedTask);
+    }catch(e){
+      console.error(e);
+    }
+  }
+}
+
 onMounted(fetchTasks);
 </script>
 
