@@ -39,6 +39,7 @@ public class TaskService {
     }
 
     public Task updateTask(Long id, Task taskDetails){
+        log.debug("Updating task with id: " + id);
         Optional<Task> taskOptional = taskRepository.findById(id);
 
         if(taskOptional.isPresent()){
