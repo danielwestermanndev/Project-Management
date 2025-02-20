@@ -16,12 +16,5 @@ export const taskService = {
   },
   async deleteTask(id) {
     return api.delete(`/tasks/${id}`)
-  },
-  async updateTaskStatus(id, status){
-    return api.put(`/tasks/${id}/${status}`, null, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
   }
 }

@@ -1,41 +1,25 @@
 <script setup>
-import {computed, ref} from 'vue';
-import {BCard, BModal, BButton} from 'bootstrap-vue-next';
-import {taskService} from "@/services/taskAPI.js";
+import { computed, ref } from 'vue';
+import { BCard, BModal, BButton } from 'bootstrap-vue-next';
+import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-  id: {
-    type: Number,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
+  task: {
+    type: Object,
     required: true
   }
 });
 
+const emit = defineEmits(['update-task']);
+
 const cardVariant = computed(() => {
-  return props.status === "Completed" ? 'light' : 'secondary';
-})
+  return props.task.status === "Completed" ? 'light' : 'secondary';
+});
 
-const finishTask = async () => {
-  try {
-    const response = await taskService.createTask(props.id, props.status);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating task status:", error);
-    throw error;
-  }
-}
-
+const finishTask = () => {
+  props.task.status = 'Completed';
+  emit('update-task', props.task);
+};
 
 const isModalVisible = ref(false);
 </script>
@@ -43,8 +27,8 @@ const isModalVisible = ref(false);
 <template>
   <div class="task">
     <BCard :bg-variant="cardVariant">
-      <h3>{{ name }}</h3>
-      <p>{{ status }}</p>
+      <h3>{{ task.name }}</h3>
+      <p>{{ task.status }}</p>
       <BButton
         id="button-1"
         class="btn btn-info"
@@ -52,20 +36,18 @@ const isModalVisible = ref(false);
         Open
       </BButton>
       <BButton
-      id="button-2"
-      class="btn btn-success"
-      @click="finishTask"
-      >
-      Finish
+        id="button-2"
+        class="btn btn-success"
+        @click="finishTask">
+        Finish
       </BButton>
     </BCard>
 
-
     <BModal
       v-model="isModalVisible"
-      title=Task>
+      title="Task">
       <template #default>
-        <p>{{name}}</p>
+        <p>{{ task.name }}</p>
       </template>
       <template #footer>
         <button
