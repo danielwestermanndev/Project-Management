@@ -7,7 +7,7 @@ const props = defineProps({
   task: {
     type: Object,
     required: true
-  }
+  },
 });
 
 const emit = defineEmits(['update-task']);
