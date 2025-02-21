@@ -4,32 +4,38 @@ import {taskService} from "@/services/taskAPI.js";
 
 const emit = defineEmits(['task-created'])
 
-const name = ref("");
+const title = ref("");
 const description = ref("");
 const status = ref("");
+const projectId = ref("");
+const userId = ref("");
+const dueDate = ref("");
 const error = ref(null)
 
 const submit = async () => {
   try {
     const newTask = {
-      name: name.value,
+      title: title.value,
       description: description.value,
-      projectId: 1,
+      projectId: projectId.value,
       status: status.value,
-      userId: 1,
-      dueDate: "2025-02-15"
+      userId: userId.value,
+      dueDate: dueDate.value,
     };
     await taskService.createTask(newTask);
-    name.value = "";
+    title.value = "";
     description.value = "";
     status.value ="";
+    projectId.value = "";
+    userId.value = "";
+    dueDate.value = "";
     emit('task-created');
   } catch (err) {
     error.value = "Error creating task: " + (err.response?.data?.message || err.message);
   }
 }
 const isFormValid = computed(() => {
-  return name.value && description.value && status.value;
+  return title.value && description.value && status.value && projectId.value && userId.value && dueDate.value;
   })
 </script>
 
@@ -37,8 +43,8 @@ const isFormValid = computed(() => {
   <form>
     <div class="form-group">
       <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" v-model="name" required>
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" v-model="title" required>
       </div>
       <div class="form-group">
         <label for="description">Description</label>
@@ -53,6 +59,25 @@ const isFormValid = computed(() => {
           <option>Completed</option>
         </select>
       </div>
+      <div class="form-group">
+        <label for="projectId">Project</label>
+        <select v-model="projectId" id="projectId" class="form-select">
+          <option disabled value="">Please select project</option>
+          <option value="1">Test project</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="userId">User</label>
+        <select v-model="userId" id="userId" class="form-select">
+          <option disabled value="">Please select user</option>
+          <option value="1">Dan</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <input type="date" class="form-control" id="dueDate" v-model="dueDate" required>
+      </div>
+
       <div class="form-group">
         <button type="button" class="btn btn-primary" @click="submit" :disabled="!isFormValid">Create Task</button>
       </div>

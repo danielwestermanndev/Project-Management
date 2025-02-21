@@ -27,7 +27,7 @@ const isModalVisible = ref(false);
 <template>
   <div class="task">
     <BCard :bg-variant="cardVariant">
-      <h3>{{ task.name }}</h3>
+      <h3>{{ task.title }}</h3>
       <p>{{ task.status }}</p>
       <BButton
         id="button-1"
@@ -47,7 +47,7 @@ const isModalVisible = ref(false);
       v-model="isModalVisible"
       title="Task">
       <template #default>
-        <p>{{ task.name }}</p>
+        <p>{{ task.title }}</p>
       </template>
       <template #footer>
         <button
