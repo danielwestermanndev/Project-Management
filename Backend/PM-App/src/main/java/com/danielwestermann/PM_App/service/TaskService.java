@@ -2,7 +2,6 @@ package com.danielwestermann.PM_App.service;
 
 import com.danielwestermann.PM_App.entity.Task;
 import com.danielwestermann.PM_App.repository.TaskRepository;
-import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,7 +45,7 @@ public class TaskService {
             Task task = taskOptional.get();
             task.setDescription(taskDetails.getDescription());
             task.setDueDate(taskDetails.getDueDate());
-            task.setName(taskDetails.getName());
+            task.setTitle(taskDetails.getTitle());
             task.setStatus(taskDetails.getStatus());
             task.setProjectId(taskDetails.getProjectId());
             task.setUserId(taskDetails.getUserId());

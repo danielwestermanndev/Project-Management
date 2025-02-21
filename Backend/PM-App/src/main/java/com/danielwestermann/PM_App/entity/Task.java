@@ -11,10 +11,14 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private String name;
+    private String title;
+
+    @Column(name="PROJECTID")
     private Long projectId;
     private String status;
+    @Column(name="USERID")
     private Long userId;
+    @Column(name="DUEDATE")
     private Date dueDate;
 
     // Default constructor
@@ -22,11 +26,11 @@ public class Task {
     }
 
     // All-args constructor
-    public Task(Long id, String description, String name, Long projectId,
+    public Task(Long id, String description, String title, Long projectId,
                 String status, Long userId, Date dueDate) {
         this.id = id;
         this.description = description;
-        this.name = name;
+        this.title = title;
         this.projectId = projectId;
         this.status = status;
         this.userId = userId;
@@ -42,8 +46,8 @@ public class Task {
         return description;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public Long getProjectId() {
@@ -71,8 +75,8 @@ public class Task {
         this.description = description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setProjectId(Long projectId) {
@@ -97,7 +101,7 @@ public class Task {
         return "Task{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
-                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
                 ", projectId=" + projectId +
                 ", status='" + status + '\'' +
                 ", userId=" + userId +
@@ -113,7 +117,7 @@ public class Task {
         Task task = (Task) o;
         return Objects.equals(id, task.id) &&
                 Objects.equals(description, task.description) &&
-                Objects.equals(name, task.name) &&
+                Objects.equals(title, task.title) &&
                 Objects.equals(projectId, task.projectId) &&
                 Objects.equals(status, task.status) &&
                 Objects.equals(userId, task.userId) &&
@@ -123,6 +127,6 @@ public class Task {
     // hashCode method
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, name, projectId, status, userId, dueDate);
+        return Objects.hash(id, description, title, projectId, status, userId, dueDate);
     }
 }

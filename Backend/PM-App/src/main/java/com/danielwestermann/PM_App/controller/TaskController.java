@@ -29,8 +29,8 @@ public class TaskController {
 
     @PostMapping
     public Task create(@RequestBody Task task) {
-        log.debug("Task fields - name: '{}', description: '{}', status: '{}', projectId: {}, userId: {}, dueDate: {}",
-                task.getName(),
+        log.debug("Task fields - title: '{}', description: '{}', status: '{}', projectId: {}, userId: {}, dueDate: {}",
+                task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
                 task.getProjectId(),
