@@ -22,11 +22,17 @@ public class TaskController {
         this.taskService=taskService;
     }
 
-    @GetMapping
-    public List<Task> getAll() {
-        return taskService.findAll();
-    }
+    //GET
+    @GetMapping("/all")
+    public List<Task> getAll() { return taskService.findAll(); }
 
+    @GetMapping("/status")
+    public List<Task> findByStatus(@RequestParam String status) { return taskService.findByStatus(status); }
+
+    @GetMapping("/project")
+    public List<Task> findByProjectId(@RequestParam Long projectId) { return taskService.findByProjectId(projectId); }
+
+    //POST
     @PostMapping
     public Task create(@RequestBody Task task) {
         log.debug("Task fields - title: '{}', description: '{}', status: '{}', projectId: {}, userId: {}, dueDate: {}",
@@ -39,17 +45,7 @@ public class TaskController {
         return taskService.save(task);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id){
-        Optional<Task> existingTask = taskService.findById(id);
-        if(existingTask.isPresent()){
-            taskService.delete(existingTask.get());
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
+    //PUT
     @PutMapping
     @RequestMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable(value = "id") Long taskId, @RequestBody Task taskDetails){
@@ -62,14 +58,15 @@ public class TaskController {
         }
     }
 
-    @PutMapping(value = "/{id}/{status}", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<Task> updateTaskStatus(@PathVariable("id") Long taskId, @PathVariable("status") String newStatus) {
-        Task updatedTask = taskService.updateTaskStatus(taskId, newStatus);
-
-        if (updatedTask == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(updatedTask);
+    //DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Long id){
+        Optional<Task> existingTask = taskService.findById(id);
+        if(existingTask.isPresent()){
+            taskService.delete(existingTask.get());
+            return ResponseEntity.ok().build();
         }
+
+        return ResponseEntity.notFound().build();
     }
 }

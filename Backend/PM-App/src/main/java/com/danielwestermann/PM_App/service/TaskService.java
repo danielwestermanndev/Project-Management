@@ -32,9 +32,14 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public void delete(Task task){
-        log.debug("Deleting Task with ID: " + task.getId());
-        taskRepository.delete(task);
+    public List<Task> findByStatus(String status){
+        log.debug("Searching for Tasks with status: " + status);
+        return taskRepository.findByStatus(status);
+    }
+
+    public List<Task> findByProjectId(Long projectId){
+        log.debug("Searching for Tasks with projectId: " + projectId);
+        return taskRepository.findByProjectId(projectId);
     }
 
     public Task updateTask(Long id, Task taskDetails){
@@ -55,15 +60,8 @@ public class TaskService {
         }
     }
 
-    public Task updateTaskStatus(Long id, String status){
-        Optional<Task> taskOptional = taskRepository.findById(id);
-
-        if(taskOptional.isPresent()){
-            Task task = taskOptional.get();
-            task.setStatus(status);
-            return taskRepository.save(task);
-        }else{
-            return null;
-        }
+    public void delete(Task task){
+        log.debug("Deleting Task with ID: " + task.getId());
+        taskRepository.delete(task);
     }
 }

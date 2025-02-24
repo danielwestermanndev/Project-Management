@@ -1,4 +1,4 @@
 package com.danielwestermann.PM_App.repository;
 
-public class TeamRepository {
+public interface TeamRepository {
 }
