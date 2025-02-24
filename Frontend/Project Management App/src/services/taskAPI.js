@@ -5,8 +5,14 @@ const api = axios.create({
 })
 
 export const taskService = {
-  async getTasks() {
-    return api.get('/tasks')
+  async getAllTasks() {
+    return api.get('/tasks/all')
+  },
+  async getTasksByStatus(status){
+    return api.get('/tasks/status?status=' + status)
+  },
+  async getTasksByProjectId(projectId) {
+    return api.get('/tasks/project?projectId=' + projectId)
   },
   async createTask(task) {
     return api.post('/tasks', task)
@@ -16,5 +22,6 @@ export const taskService = {
   },
   async deleteTask(id) {
     return api.delete(`/tasks/${id}`)
-  }
+  },
+
 }

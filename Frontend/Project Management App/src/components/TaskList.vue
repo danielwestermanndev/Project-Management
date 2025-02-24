@@ -1,72 +1,99 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { taskService } from "@/services/taskAPI.js";
+import {computed } from 'vue'; // Remove ref since we'll use store
 import TaskItem from "@/components/TaskItem.vue";
 import { BCardGroup } from "bootstrap-vue-next";
-import { useVisibilityStore } from "@/stores/visibility.js";
+import { useTaskStore } from '@/stores/taskStore'; // Add this
+import { storeToRefs } from 'pinia'; // Add this
 
-const tasks = ref([]);
-const loading = ref(false);
-const error = ref(null);
+const props = defineProps({
+  status: String,
+  projectId: Number,
+})
 
-const visibilityStore = useVisibilityStore();
-const { showTaskOverview, openTaskOverview, closeTaskOverview } = visibilityStore;
+// Initialize stores
+const taskStore = useTaskStore();
 
-const fetchTasks = async () => {
-  console.log("Fetching tasks...");
+// Get reactive state from stores using storeToRefs
+const { loading, error } = storeToRefs(taskStore);
+
+// Use computed to get tasks for this specific status
+const tasks = computed(() => taskStore.getTasksByStatus(props.status))
+
+const startDrag = (event, item) => {
+  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('taskId', item.id.toString()); // Changed 'itemID' to 'taskId'
+  console.log('Starting drag with task ID:', item.id); // Debug log
+}
+
+const onDrop = async (event, status) => {
   try {
-    loading.value = true;
-    const {data} = await taskService.getTasks();
-    tasks.value = data;
-  } catch (err) {
-    error.value = 'Error fetching tasks: ' + (err.response?.data?.message || err.message);
-  } finally {
-    loading.value = false;
-  }
-  console.log("Fetched tasks");
-};
+    const taskId = parseInt(event.dataTransfer.getData('taskId'));
+    console.log('Dragged taskId:', taskId, 'New status:', status);
 
-const updateTask = async (updatedTask) => {
-  const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
-  if(index !== -1){
-    tasks.value[index] = updatedTask
-    try{
-      await taskService.updateTask(updatedTask.id, updatedTask);
-    }catch(e){
-      console.error(e);
+    if (isNaN(taskId)) { // Better check for invalid ID
+      throw new Error('Invalid task ID in drag event');
     }
+
+    await taskStore.updateTaskStatus(taskId, status); // Remove 'this.'
+  } catch (error) {
+    console.error('Drop handler error:', error);
   }
 }
 
-onMounted(fetchTasks);
+// Update task handler using store
+const updateTask = async (updatedTask) => {
+  try {
+    await taskStore.updateTaskStatus(updatedTask.id, updatedTask.status);
+  } catch (e) {
+    console.error(e);
+  }
+}
 </script>
 
 <template>
-  <div class="container">
+  <div class="task-list-container h-100">
     <div v-if="loading">Loading Tasks...</div>
     <div v-else-if="error">{{ error }}</div>
-    <button @click="openTaskOverview">Show</button>
-    <button @click="closeTaskOverview">Hide</button>
 
-    <BCardGroup class="card-group" v-if="showTaskOverview">
+    <BCardGroup
+      class="card-group h-100"
+      @drop="onDrop($event, status)"
+      @dragenter.prevent
+      @dragover.prevent
+    >
       <TaskItem
         v-for="task in tasks"
         :key="task.id"
         :task="task"
         @update-task="updateTask"
+        draggable="true"
+        @dragstart="startDrag($event, task)"
       />
     </BCardGroup>
   </div>
 </template>
 
 <style scoped>
-.container {
-  margin-top: 5%;
+.task-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card-group {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px; /* Abstand zwischen den Karten */
+  flex-direction: column;
+  gap: 16px;
+  background-color: darkgray;
+  padding: 1rem;
+  min-height: 400px;  /* Added this line */
+  flex-grow: 1;
+  border-radius: 20px;
+}
+
+/* If you want empty columns to still be droppable */
+.card-group:empty {
+  min-height: 800px; /* Updated this to match */
 }
 </style>

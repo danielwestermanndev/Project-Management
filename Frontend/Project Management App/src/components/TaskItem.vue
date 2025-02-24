@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { BCard, BModal, BButton } from 'bootstrap-vue-next';
-import { defineProps, defineEmits } from 'vue';
+import { defineEmits } from 'vue';
 
 const props = defineProps({
   task: {
@@ -59,3 +59,9 @@ const isModalVisible = ref(false);
     </BModal>
   </div>
 </template>
+
+<style>
+.task{
+  width: 100%;
+}
+</style>

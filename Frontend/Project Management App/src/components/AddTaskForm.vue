@@ -1,8 +1,9 @@
 <script setup>
-import {computed, ref} from "vue";
-import {taskService} from "@/services/taskAPI.js";
+import { computed, ref } from "vue";
+import { useTaskStore } from '@/stores/taskStore';
 
-const emit = defineEmits(['task-created'])
+const taskStore = useTaskStore();
+const emit = defineEmits(['success'])
 
 const title = ref("");
 const description = ref("");
@@ -17,26 +18,32 @@ const submit = async () => {
     const newTask = {
       title: title.value,
       description: description.value,
-      projectId: projectId.value,
+      projectId: Number(projectId.value),
       status: status.value,
-      userId: userId.value,
+      userId: Number(userId.value),
       dueDate: dueDate.value,
     };
-    await taskService.createTask(newTask);
+
+    await taskStore.createTask(newTask);
+
+    // Reset form
     title.value = "";
     description.value = "";
-    status.value ="";
+    status.value = "";
     projectId.value = "";
     userId.value = "";
     dueDate.value = "";
-    emit('task-created');
+
+    emit('success'); // Emit success after task is created
   } catch (err) {
     error.value = "Error creating task: " + (err.response?.data?.message || err.message);
   }
 }
+
 const isFormValid = computed(() => {
-  return title.value && description.value && status.value && projectId.value && userId.value && dueDate.value;
-  })
+  return title.value && description.value && status.value &&
+    projectId.value && userId.value && dueDate.value;
+})
 </script>
 
 <template>
@@ -55,7 +62,7 @@ const isFormValid = computed(() => {
         <select v-model="status" id="status" class="form-select">
           <option disabled value="">Please select status</option>
           <option>Not Started</option>
-          <option>In Progess</option>
+          <option>In Progress</option>
           <option>Completed</option>
         </select>
       </div>
@@ -78,7 +85,7 @@ const isFormValid = computed(() => {
         <input type="date" class="form-control" id="dueDate" v-model="dueDate" required>
       </div>
 
-      <div class="form-group">
+      <div class="form-group-submitButton">
         <button type="button" class="btn btn-primary" @click="submit" :disabled="!isFormValid">Create Task</button>
       </div>
     </div>
@@ -86,5 +93,7 @@ const isFormValid = computed(() => {
 </template>
 
 <style scoped>
-
+.form-group-submitButton {
+  margin-top: 25px;
+}
 </style>
